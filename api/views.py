@@ -9,6 +9,7 @@ from django.http import Http404
 from rest_framework import mixins, generics
 
 # Create your views here.
+# Function Based View
 @api_view(['GET', 'POST'])
 def students(request):
     if request.method == 'GET':
@@ -23,6 +24,7 @@ def students(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
 
+# Function Based View
 @api_view(['GET','PUT','DELETE'])
 def studentsDetailsView(request, pk):
     try:
@@ -46,6 +48,8 @@ def studentsDetailsView(request, pk):
            student.delete()
            return Response(status=status.HTTP_204_NO_CONTENT)     
 
+
+# Class Based View
 # class Employees(APIView):
 #     def get(self,request):
 #         employees = Employee.objects.all()
@@ -60,6 +64,7 @@ def studentsDetailsView(request, pk):
 #          return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)     
 
 
+# Class Based View
 # class EmployeesDetailsView(APIView):
 #     def get_object(self,pk):
 #         try:
@@ -86,6 +91,9 @@ def studentsDetailsView(request, pk):
 #         employee.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT) 
 
+
+"""
+# Mixin
 class Employees(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
@@ -95,7 +103,7 @@ class Employees(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Generic
 
     def post(self,request):
         return self.create(request)    
-
+# Mixin
 class EmployeesDetailsView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
@@ -108,3 +116,16 @@ class EmployeesDetailsView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, m
 
     def delete(self,request,pk):
         return self.destroy(request,pk)        
+
+"""
+
+# Generics
+class Employees(generics.ListCreateAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+
+# Generics
+class EmployeesDetailsView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+    lookup_field = 'pk'
